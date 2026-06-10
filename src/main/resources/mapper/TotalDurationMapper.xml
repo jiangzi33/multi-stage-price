@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.multi_stage_price.mapper.TotalDurationMapper">
+
+    <!-- 实体映射 -->
+    <resultMap id="TotalDurationMap" type="com.example.multi_stage_price.entity.TotalDuration">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="totalDuration" column="total_duration"/>
+        <result property="date" column="date"/>
+        <result property="lastSyncTime" column="last_sync_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 新增 -->
+    <insert id="insert">
+        INSERT INTO total_duration
+        (
+        user_id,
+        total_duration,
+        date,
+        last_sync_time,
+        create_time,
+        update_time
+        )
+        VALUES
+        (
+        #{userId},
+        #{totalDuration},
+        #{date},
+        #{lastSyncTime},
+        #{createTime},
+        #{updateTime}
+        )
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete">
+        DELETE
+        FROM total_duration
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 根据用户ID和日期查询 -->
+    <select id="queryByUserIdAndDate"
+            resultMap="BaseResultMap">
+        SELECT
+        id,
+        user_id,
+        total_duration,
+        date,
+        last_sync_time,
+        create_time,
+        update_time
+        FROM total_duration
+        WHERE user_id = #{userId}
+        AND date = #{date}
+        LIMIT 1
+    </select>
+
+    <!-- 更新 -->
+    <update id="modify">
+        UPDATE total_duration
+        SET
+        user_id = #{userId},
+        total_duration = #{totalDuration},
+        date = #{date},
+        last_sync_time = #{lastSyncTime},
+        update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

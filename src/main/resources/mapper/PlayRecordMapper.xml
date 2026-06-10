@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.multi_stage_price.mapper.PlayRecordMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.example.multi_stage_price.entity.PlayRecord">
+
+        <id column="id" property="id"/>
+
+        <result column="user_id" property="userId"/>
+
+        <result column="sound_id" property="soundId"/>
+
+        <result column="duration" property="duration"/>
+
+        <result column="sync_time" property="syncTime"/>
+
+        <result column="create_time" property="createTime"/>
+
+        <result column="update_time" property="updateTime"/>
+
+    </resultMap>
+
+
+    <!-- 添加音乐 -->
+    <insert id="insert">
+
+        INSERT INTO play_record ( user_id, sound_id, duration, sync_time, create_time, update_time )
+
+        VALUES ( #{userId}, #{soundId}, #{duration}, now(), now(), now() )
+
+    </insert>
+
+    <!-- 根据ID查询 -->
+    <select id="queryByUserIdAndTime" resultMap="BaseResultMap">
+
+        select *
+
+        from play_record
+
+        where user_id = #{userId} and sync_time between #{startTime} and #{endTime}
+
+    </select>
+
+</mapper>

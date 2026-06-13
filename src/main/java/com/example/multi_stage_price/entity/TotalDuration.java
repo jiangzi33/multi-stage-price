@@ -6,8 +6,8 @@ public class TotalDuration {
     private int id;
     private int userId;
     private int totalDuration;
-    private Date date;
-    private int lastSyncTime;
+    private String date;
+    private Date lastSyncTime;
     private Date createTime;
     private Date updateTime;
 
@@ -35,19 +35,19 @@ public class TotalDuration {
         this.totalDuration = totalDuration;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public int getLastSyncTime() {
+    public Date getLastSyncTime() {
         return lastSyncTime;
     }
 
-    public void setLastSyncTime(int lastSyncTime) {
+    public void setLastSyncTime(Date lastSyncTime) {
         this.lastSyncTime = lastSyncTime;
     }
 

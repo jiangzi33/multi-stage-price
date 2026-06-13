@@ -31,9 +31,9 @@
         #{userId},
         #{totalDuration},
         #{date},
-        #{lastSyncTime},
-        #{createTime},
-        #{updateTime}
+        now(),
+        now(),
+        now()
         )
     </insert>
 
@@ -46,7 +46,7 @@
 
     <!-- 根据用户ID和日期查询 -->
     <select id="queryByUserIdAndDate"
-            resultMap="BaseResultMap">
+            resultMap="TotalDurationMap">
         SELECT
         id,
         user_id,
@@ -68,8 +68,8 @@
         user_id = #{userId},
         total_duration = #{totalDuration},
         date = #{date},
-        last_sync_time = #{lastSyncTime},
-        update_time = #{updateTime}
+        last_sync_time = now(),
+        update_time = now()
         WHERE id = #{id}
     </update>
 

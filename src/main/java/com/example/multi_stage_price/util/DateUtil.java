@@ -1,5 +1,6 @@
 package com.example.multi_stage_price.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,5 +19,10 @@ public class DateUtil {
         calendar.set(Calendar.MINUTE,59);
         calendar.set(Calendar.SECOND,59);
         return calendar.getTime();
+    }
+
+    public static String format(Date date){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return simpleDateFormat.format(date);
     }
 }

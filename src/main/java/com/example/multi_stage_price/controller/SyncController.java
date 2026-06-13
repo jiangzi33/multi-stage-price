@@ -6,6 +6,7 @@ import com.example.multi_stage_price.service.SyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +18,7 @@ public class SyncController {
     private SyncService syncService;
 
     @PostMapping("/sync")
-    public BaseVO sync(PlayRecordCmd cmd) {
+    public BaseVO sync(@RequestBody PlayRecordCmd cmd) {
         long startTime = System.currentTimeMillis();
         long endTime;
         try {

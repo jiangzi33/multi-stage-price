@@ -30,11 +30,24 @@ public class SyncServiceImpl implements SyncService {
     public void sync(PlayRecordCmd cmd) {
         playRecordService.insert(cmd);
         List<PlayRecord> playRecordList = playRecordService.queryByUserIdAndTime(cmd.getUserId(), DateUtil.getStartTimeCurrentDate(), DateUtil.getEndTimeCurrentDate());
+        int total = calculate(playRecordList);
+
+        saveDuration(cmd,total);
+
+        int stage = calculateStage(total);
+        int amount = calculateAmount(total);
+    }
+
+    private int calculate(List<PlayRecord> playRecordList){
         int totalDuration = 0;
         for (int i = 0; i < playRecordList.size(); i++) {
             int time = playRecordList.get(i).getDuration();
             totalDuration += time;
         }
+        return totalDuration;
+    }
+
+    private void saveDuration(PlayRecordCmd cmd, int totalDuration){
         TotalDuration durationInDB = totalDurationMapper.queryByUserIdAndDate(cmd.getUserId(), DateUtil.format(new Date()));
         if(durationInDB==null){
             TotalDuration duration = new TotalDuration();
@@ -46,15 +59,21 @@ public class SyncServiceImpl implements SyncService {
             durationInDB.setTotalDuration(totalDuration);
             totalDurationMapper.modify(durationInDB);
         }
+    }
 
+    private int calculateStage(int totalDuration){
         String stageRule = sysConfigIntegration.querySysConfig(MultiStagePriceConstant.PRICE_STAGE_RULE_CODE);
-        String amountRule = sysConfigIntegration.querySysConfig(MultiStagePriceConstant.PRICE_AMOUNT_RULE_CODE);
         log.info("stage rule: {}",stageRule);
-        log.info("amount rule: {}",amountRule);
-
         int stage = JexlUtil.getStage(stageRule,totalDuration);
         log.info("stage level: {}",stage);
+        return stage;
+    }
+
+    private int calculateAmount(int totalDuration){
+        String amountRule = sysConfigIntegration.querySysConfig(MultiStagePriceConstant.PRICE_AMOUNT_RULE_CODE);
+        log.info("amount rule: {}", amountRule);
         int amount = JexlUtil.getAmount(amountRule,totalDuration);
-        log.info("amount: {}",amount);
+        log.info("amount: {}", amount);
+        return amount;
     }
 }

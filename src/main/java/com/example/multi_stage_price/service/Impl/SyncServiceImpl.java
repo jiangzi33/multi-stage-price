@@ -29,8 +29,7 @@ public class SyncServiceImpl implements SyncService {
     @Override
     public void sync(PlayRecordCmd cmd) {
         playRecordService.insert(cmd);
-        List<PlayRecord> playRecordList = playRecordService.queryByUserIdAndTime(cmd.getUserId(), DateUtil.getStartTimeCurrentDate(), DateUtil.getEndTimeCurrentDate());
-        int total = calculate(playRecordList);
+        int total = calculate(cmd);
 
         saveDuration(cmd,total);
 
@@ -38,7 +37,8 @@ public class SyncServiceImpl implements SyncService {
         int amount = calculateAmount(total);
     }
 
-    private int calculate(List<PlayRecord> playRecordList){
+    private int calculate(PlayRecordCmd cmd){
+        List<PlayRecord> playRecordList = playRecordService.queryByUserIdAndTime(cmd.getUserId(), DateUtil.getStartTimeCurrentDate(), DateUtil.getEndTimeCurrentDate());
         int totalDuration = 0;
         for (int i = 0; i < playRecordList.size(); i++) {
             int time = playRecordList.get(i).getDuration();

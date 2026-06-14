@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.multi_stage_price.mapper.PrizeRecordMapper">
+
+    <resultMap id="PrizeRecordResultMap"
+               type="com.example.multi_stage_price.entity.PrizeRecord">
+        <id property="id" column="id"/>
+
+        <result property="userId" column="user_id"/>
+        <result property="bizScene" column="biz_scene"/>
+        <result property="prizeCode" column="prize_code"/>
+        <result property="prizeDate" column="prize_date"/>
+        <result property="prizeStage" column="prize_stage"/>
+        <result property="prizeAmount" column="prize_amount"/>
+        <result property="outBizNo" column="out_biz_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="com.example.multi_stage_price.entity.PrizeRecord">
+
+        INSERT INTO prize_record
+        (
+        user_id,
+        biz_scene,
+        prize_code,
+        prize_date,
+        prize_stage,
+        prize_amount,
+        out_biz_no,
+        create_time,
+        update_time
+        )
+        VALUES
+        (
+        #{userId},
+        #{bizScene},
+        #{prizeCode},
+        #{prizeDate},
+        #{prizeStage},
+        #{prizeAmount},
+        #{outBizNo},
+        now(),
+        now()
+        )
+
+    </insert>
+
+    <select id="queryByUserIdAndTime"
+            resultMap="PrizeRecordResultMap">
+
+        SELECT
+        id,
+        user_id,
+        biz_scene,
+        prize_code,
+        prize_date,
+        prize_stage,
+        prize_amount,
+        out_biz_no,
+        create_time,
+        update_time
+        FROM prize_record
+        WHERE user_id = #{userId}
+        AND create_time <![CDATA[ >= ]]> #{startTime}
+        AND create_time <![CDATA[ < ]]> #{endTime}
+        ORDER BY create_time DESC
+
+    </select>
+
+</mapper>

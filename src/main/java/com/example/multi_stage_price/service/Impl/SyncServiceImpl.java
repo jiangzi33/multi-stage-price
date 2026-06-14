@@ -9,6 +9,7 @@ import com.example.multi_stage_price.mapper.TotalDurationMapper;
 import com.example.multi_stage_price.service.PlayRecordService;
 import com.example.multi_stage_price.service.SyncService;
 import com.example.multi_stage_price.util.DateUtil;
+import com.example.multi_stage_price.util.JexlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,5 +51,10 @@ public class SyncServiceImpl implements SyncService {
         String amountRule = sysConfigIntegration.querySysConfig(MultiStagePriceConstant.PRICE_AMOUNT_RULE_CODE);
         log.info("stage rule: {}",stageRule);
         log.info("amount rule: {}",amountRule);
+
+        int stage = JexlUtil.getStage(stageRule,totalDuration);
+        log.info("stage level: {}",stage);
+        int amount = JexlUtil.getAmount(amountRule,totalDuration);
+        log.info("amount: {}",amount);
     }
 }

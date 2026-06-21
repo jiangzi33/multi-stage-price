@@ -23,6 +23,11 @@ public class PrizeRecordServiceImpl implements PrizeRecordService {
     }
 
     @Override
+    public void insert(PrizeRecord prizeRecord) {
+        prizeRecordMapper.insert(prizeRecord);
+    }
+
+    @Override
     public List<PrizeRecord> queryByUserIdAndTime(int userId, Date startTime, Date endTime) {
         return prizeRecordMapper.queryByUserIdAndTime(userId,startTime,endTime);
     }

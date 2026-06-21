@@ -2,17 +2,21 @@ package com.example.multi_stage_price.service.Impl;
 
 import com.example.multi_stage_price.constant.MultiStagePriceConstant;
 import com.example.multi_stage_price.controller.cmd.PlayRecordCmd;
+import com.example.multi_stage_price.controller.cmd.PrizeRecordCmd;
 import com.example.multi_stage_price.entity.PlayRecord;
+import com.example.multi_stage_price.entity.PrizeRecord;
 import com.example.multi_stage_price.entity.TotalDuration;
 import com.example.multi_stage_price.intergration.SysConfigIntegration;
 import com.example.multi_stage_price.mapper.TotalDurationMapper;
 import com.example.multi_stage_price.service.PlayRecordService;
+import com.example.multi_stage_price.service.PrizeRecordService;
 import com.example.multi_stage_price.service.SyncService;
 import com.example.multi_stage_price.util.DateUtil;
 import com.example.multi_stage_price.util.JexlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +30,10 @@ public class SyncServiceImpl implements SyncService {
     private SysConfigIntegration sysConfigIntegration;
     @Autowired
     private TotalDurationMapper totalDurationMapper;
+    @Autowired
+    private PrizeRecordService prizeRecordService;
     @Override
+    //这个方法没有加入transactional的原因：因为就算后面失败了，我们得把流水存下来，为后面的补发提供基础
     public void sync(PlayRecordCmd cmd) {
         playRecordService.insert(cmd);
         int total = calculate(cmd);
@@ -35,6 +42,7 @@ public class SyncServiceImpl implements SyncService {
 
         int stage = calculateStage(total);
         int amount = calculateAmount(total);
+        sendPrize(cmd,stage,amount);
     }
 
     private int calculate(PlayRecordCmd cmd){
@@ -75,5 +83,19 @@ public class SyncServiceImpl implements SyncService {
         int amount = JexlUtil.getAmount(amountRule,totalDuration);
         log.info("amount: {}", amount);
         return amount;
+    }
+
+    @Transactional
+    protected void sendPrize(PlayRecordCmd cmd, int stage, int amount){
+        log.info("调发奖");
+        PrizeRecord prizeRecord = new PrizeRecord();
+        prizeRecord.setUserId(cmd.getUserId());
+        prizeRecord.setBizScene(cmd.getBizScene());
+        prizeRecord.setPrizeCode(cmd.getPrizeCode());
+        prizeRecord.setPrizeDate(DateUtil.format(new Date()));
+        prizeRecord.setPrizeStage(stage);
+        prizeRecord.setPrizeAmount(amount);
+
+        prizeRecordService.insert(prizeRecord);
     }
 }

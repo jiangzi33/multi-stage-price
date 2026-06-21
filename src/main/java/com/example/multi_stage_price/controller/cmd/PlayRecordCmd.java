@@ -6,6 +6,24 @@ public class PlayRecordCmd {
     private int userId;
     private int soundId;
     private int duration;
+    private String bizScene;
+    private String prizeCode;
+
+    public String getPrizeCode() {
+        return prizeCode;
+    }
+
+    public void setPrizeCode(String prizeCode) {
+        this.prizeCode = prizeCode;
+    }
+
+    public String getBizScene() {
+        return bizScene;
+    }
+
+    public void setBizScene(String bizScene) {
+        this.bizScene = bizScene;
+    }
 
     public int getUserId() {
         return userId;

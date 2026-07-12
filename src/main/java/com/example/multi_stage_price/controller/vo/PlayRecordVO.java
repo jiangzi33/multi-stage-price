@@ -6,6 +6,7 @@ public class PlayRecordVO {
     private int id;
     private int userId;
     private int soundId;
+    private String soundName;
     private int duration;
     private Date syncTime;
     private Date createTime;
@@ -33,6 +34,14 @@ public class PlayRecordVO {
 
     public void setSoundId(int soundId) {
         this.soundId = soundId;
+    }
+
+    public String getSoundName() {
+        return soundName;
+    }
+
+    public void setSoundName(String soundName) {
+        this.soundName = soundName;
     }
 
     public int getDuration() {

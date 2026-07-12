@@ -25,6 +25,11 @@ public class PlayRecordServiceImpl implements PlayRecordService {
        return playRecordMapper.queryByUserIdAndTime(userId,startTime,endTime);
     }
 
+    @Override
+    public List<PlayRecord> queryByUserIdAndTime(int userId, Date startTime, Date endTime, int pageStart, int pageSize) {
+       return playRecordMapper.queryByUserIdAndTimeWithPage(userId, startTime, endTime, pageStart, pageSize);
+    }
+
     private PlayRecord buildPlayRecord(PlayRecordCmd cmd){
         PlayRecord playRecord = new PlayRecord();
         playRecord.setUserId(cmd.getUserId());

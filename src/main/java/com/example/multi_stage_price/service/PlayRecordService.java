@@ -9,4 +9,5 @@ import java.util.List;
 public interface PlayRecordService {
     void insert(PlayRecordCmd cmd);
     List<PlayRecord> queryByUserIdAndTime(int userId, Date startTime, Date endTime);
+    List<PlayRecord> queryByUserIdAndTime(int userId, Date startTime, Date endTime, int pageStart, int pageSize);
 }

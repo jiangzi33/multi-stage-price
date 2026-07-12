@@ -96,6 +96,9 @@ public class SyncServiceImpl implements SyncService {
         prizeRecord.setPrizeStage(stage);
         prizeRecord.setPrizeAmount(amount);
 
+        String outBizNo = cmd.getBizScene() + "_" + cmd.getUserId() + "_" + cmd.getPrizeCode() + "_" + DateUtil.format(new Date()) + "_" + stage + "_" + amount;
+        prizeRecord.setOutBizNo(outBizNo);
+
         prizeRecordService.insert(prizeRecord);
     }
 }

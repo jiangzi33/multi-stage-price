@@ -44,4 +44,19 @@
 
     </select>
 
+    <!-- 根据ID分页查询 -->
+    <select id="queryByUserIdAndTimeWithPage" resultMap="BaseResultMap">
+
+        select *
+
+        from play_record
+
+        where user_id = #{userId} and sync_time between #{startTime} and #{endTime}
+
+        order by sync_time desc
+
+        limit #{pageStart}, #{pageSize}
+
+    </select>
+
 </mapper>

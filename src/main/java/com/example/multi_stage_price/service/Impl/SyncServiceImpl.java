@@ -2,10 +2,10 @@ package com.example.multi_stage_price.service.Impl;
 
 import com.example.multi_stage_price.constant.MultiStagePriceConstant;
 import com.example.multi_stage_price.controller.cmd.PlayRecordCmd;
-import com.example.multi_stage_price.controller.cmd.PrizeRecordCmd;
 import com.example.multi_stage_price.entity.PlayRecord;
 import com.example.multi_stage_price.entity.PrizeRecord;
 import com.example.multi_stage_price.entity.TotalDuration;
+import com.example.multi_stage_price.intergration.SendCoinIntegration;
 import com.example.multi_stage_price.intergration.SysConfigIntegration;
 import com.example.multi_stage_price.mapper.TotalDurationMapper;
 import com.example.multi_stage_price.service.PlayRecordService;
@@ -15,6 +15,7 @@ import com.example.multi_stage_price.util.DateUtil;
 import com.example.multi_stage_price.util.JexlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +33,12 @@ public class SyncServiceImpl implements SyncService {
     private TotalDurationMapper totalDurationMapper;
     @Autowired
     private PrizeRecordService prizeRecordService;
+    @Autowired
+    private SendCoinIntegration sendCoinIntegration;
     @Override
     //这个方法没有加入transactional的原因：因为就算后面失败了，我们得把流水存下来，为后面的补发提供基础
     public void sync(PlayRecordCmd cmd) {
+        cmd.setPrizeCode("Coin_1");
         playRecordService.insert(cmd);
         int total = calculate(cmd);
 
@@ -42,7 +46,15 @@ public class SyncServiceImpl implements SyncService {
 
         int stage = calculateStage(total);
         int amount = calculateAmount(total);
-        sendPrize(cmd,stage,amount);
+        if(stage==0 || amount == 0){
+            return;
+        }
+        try{
+            sendPrize(cmd,stage,amount);
+        }catch (DuplicateKeyException e){
+            log.info("stage = {}, 本阶段已发放", stage);
+        }
+
     }
 
     private int calculate(PlayRecordCmd cmd){
@@ -87,7 +99,8 @@ public class SyncServiceImpl implements SyncService {
 
     @Transactional
     protected void sendPrize(PlayRecordCmd cmd, int stage, int amount){
-        log.info("调发奖");
+        String outBizNo = cmd.getBizScene() + "_" + cmd.getUserId() + "_" + cmd.getPrizeCode() + "_" + DateUtil.format(new Date()) + "_" + stage + "_" + amount;
+        sendCoinIntegration.sendPrice(cmd.getPrizeCode(),amount, outBizNo);
         PrizeRecord prizeRecord = new PrizeRecord();
         prizeRecord.setUserId(cmd.getUserId());
         prizeRecord.setBizScene(cmd.getBizScene());
@@ -95,8 +108,6 @@ public class SyncServiceImpl implements SyncService {
         prizeRecord.setPrizeDate(DateUtil.format(new Date()));
         prizeRecord.setPrizeStage(stage);
         prizeRecord.setPrizeAmount(amount);
-
-        String outBizNo = cmd.getBizScene() + "_" + cmd.getUserId() + "_" + cmd.getPrizeCode() + "_" + DateUtil.format(new Date()) + "_" + stage + "_" + amount;
         prizeRecord.setOutBizNo(outBizNo);
 
         prizeRecordService.insert(prizeRecord);

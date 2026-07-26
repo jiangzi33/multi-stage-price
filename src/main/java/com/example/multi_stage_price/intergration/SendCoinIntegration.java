@@ -1,7 +1,10 @@
 package com.example.multi_stage_price.intergration;
 
 import com.example.multi_stage_price.controller.vo.BaseVO;
+import com.example.multi_stage_price.exeception.QueryRecordException;
 import com.example.multi_stage_price.exeception.SendPriceFailException;
+import com.example.multi_stage_price.intergration.vo.CoinRecordVO;
+import com.example.multi_stage_price.intergration.vo.MultiCoinRecordVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -10,6 +13,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -28,6 +34,22 @@ public class SendCoinIntegration {
             }
         } catch (Exception e) {
             log.warn("fail to send price, soundCode={}, amount={}, outBizNo={}", code, amount, outBizNo);
+        }
+    }
+
+    public List<CoinRecordVO> queryCoinRecordList(){
+        try {
+            String url = "http://127.0.0.1:8084/coin-record/query-last-time";
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity<Object> requestEntity = new HttpEntity<>(null,headers);
+            ResponseEntity<MultiCoinRecordVO> result = restTemplate.getForEntity(url, MultiCoinRecordVO.class);
+            if (result == null || result.getBody()==null ||!result.getBody().getBaseVO().isSuccess()) {
+                throw new QueryRecordException("query record fail");
+            }
+            return result.getBody().getCoinRecordVOList();
+        } catch (Exception e) {
+            log.warn("query record fail");
+            return new ArrayList<>();
         }
     }
 }

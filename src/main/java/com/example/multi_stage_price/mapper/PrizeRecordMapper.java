@@ -10,4 +10,5 @@ import java.util.List;
 public interface PrizeRecordMapper {
     void insert(PrizeRecord prizeRecord);
     List<PrizeRecord> queryByUserIdAndTime(int userId, Date startTime, Date endTime);
+    List<PrizeRecord> queryByTime();
 }

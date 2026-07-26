@@ -83,7 +83,6 @@ public class SyncServiceImpl implements SyncService {
 
     private int calculateStage(int totalDuration){
         String stageRule = sysConfigIntegration.querySysConfig(MultiStagePriceConstant.PRICE_STAGE_RULE_CODE);
-        log.info("stage rule: {}",stageRule);
         int stage = JexlUtil.getStage(stageRule,totalDuration);
         log.info("stage level: {}",stage);
         return stage;
@@ -91,7 +90,6 @@ public class SyncServiceImpl implements SyncService {
 
     private int calculateAmount(int totalDuration){
         String amountRule = sysConfigIntegration.querySysConfig(MultiStagePriceConstant.PRICE_AMOUNT_RULE_CODE);
-        log.info("amount rule: {}", amountRule);
         int amount = JexlUtil.getAmount(amountRule,totalDuration);
         log.info("amount: {}", amount);
         return amount;

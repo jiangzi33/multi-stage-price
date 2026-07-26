@@ -72,4 +72,25 @@
 
     </select>
 
+    <select id="queryByTime"
+            resultMap="PrizeRecordResultMap">
+
+        SELECT
+        id,
+        user_id,
+        biz_scene,
+        prize_code,
+        prize_date,
+        prize_stage,
+        prize_amount,
+        out_biz_no,
+        create_time,
+        update_time
+        FROM prize_record
+        WHERE create_time <![CDATA[ >= ]]> date_add(now(),interval -1 minute)
+        AND create_time <![CDATA[ < ]]> now()
+        ORDER BY create_time DESC
+
+    </select>
+
 </mapper>

@@ -7,7 +7,6 @@ import com.example.multi_stage_price.entity.PrizeRecord;
 import com.example.multi_stage_price.service.PrizeRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -36,7 +35,7 @@ public class PrizeRecordController {
     }
 
     @GetMapping("/query")
-    public MultiPrizeRecordVO queryByUserIdAndTime(int userId, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date endTime){
+    public MultiPrizeRecordVO queryByUserIdAndTime(int userId, Date startTime, Date endTime){
         long start = System.currentTimeMillis();
         long end;
         MultiPrizeRecordVO multiPrizeRecordVO = new MultiPrizeRecordVO();

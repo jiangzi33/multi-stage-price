@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.seata.spring.annotation.GlobalTransactional;
 
 import java.util.Date;
 import java.util.List;
@@ -95,7 +95,7 @@ public class SyncServiceImpl implements SyncService {
         return amount;
     }
 
-    @Transactional
+    @GlobalTransactional
     protected void sendPrize(PlayRecordCmd cmd, int stage, int amount){
         String outBizNo = cmd.getBizScene() + "_" + cmd.getUserId() + "_" + cmd.getPrizeCode() + "_" + DateUtil.format(new Date()) + "_" + stage + "_" + amount;
         sendCoinIntegration.sendPrice(cmd.getPrizeCode(),amount, outBizNo);
